@@ -19,11 +19,13 @@ This project contains Locust test scripts to perform load testing on the Trainin
 
 ```
 Locust/
-├── locustfile.py              # Full-featured test with CSV logging
-├── easy_locustfile.py         # Simplified test version
-├── training_api_responses.csv # Generated response data (created on run)
-├── venv/                      # Python virtual environment
-└── README.md                  # This file
+├── locustfile.py                  # Full-featured test with CSV logging
+├── locustfile_training_list.py    # Training list endpoint testing
+├── locust_registration.py         # Registration endpoint testing
+├── registration.csv                # Sample registration data
+├── training_api_responses.csv     # Generated response data (created on run)
+├── venv/                          # Python virtual environment
+└── README.md                      # This file
 ```
 
 ## Prerequisites
@@ -80,10 +82,14 @@ export LOCUST_NO_VERIFY_SSL=true
 - Saves training titles and pagination data
 - Records response times in milliseconds
 
-#### easy_locustfile.py (Simple)
-- Lightweight version for quick testing
-- Prints JSON responses to console
-- Ideal for debugging and initial API validation
+#### locustfile_training_list.py
+- Training list endpoint testing
+- GET endpoint testing for retrieving training sessions
+
+#### locust_registration.py
+- Registration endpoint testing
+- POST endpoint testing with CSV data
+- Tests user registration workflow with sample data from registration.csv
 
 ## Usage
 
@@ -130,11 +136,13 @@ Parameters:
 - `--spawn-rate 2`: Add 2 users per second
 - `--run-time 60s`: Run for 60 seconds
 
-#### Option 4: Using the Simple Test File
+#### Option 4: Testing Registration Endpoint
 
 ```bash
-locust -f easy_locustfile.py --host=https://dev-training.arcapps.org
+locust -f locust_registration.py --host=https://dev-training.arcapps.org
 ```
+
+This will test the registration endpoint using sample data from [registration.csv](registration.csv).
 
 ### Example Commands
 
@@ -149,7 +157,7 @@ locust -f locustfile.py --host=https://dev-training.arcapps.org --headless -u 10
 locust -f locustfile.py --host=https://dev-training.arcapps.org --headless -u 50 -r 5 -t 30m
 ```
 
-## API Endpoint Being Tested
+## API Endpoints Being Tested
 
 ### GET /api/v1/training/list-for-user
 
@@ -187,6 +195,33 @@ locust -f locustfile.py --host=https://dev-training.arcapps.org --headless -u 50
   }
 }
 ```
+
+### POST /api/v1/training/register
+
+**Description:** Registers a user for a training session
+
+**Test Script:** [locust_registration.py](locust_registration.py)
+
+**Request Body:**
+```json
+{
+  "training": "training_id",
+  "phone": "01XXXXXXXXX",
+  "nid": "XXXXXXXXXXX",
+  "designation": "User designation",
+  "office": "User office/organization"
+}
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "message": "Registration successful"
+}
+```
+
+**Test Data Source:** [registration.csv](registration.csv)
 
 ## Output Data
 
